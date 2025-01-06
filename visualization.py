@@ -108,22 +108,16 @@ def plot_shapley(feature_names,instance,explanation_singletons,title="",ax=None)
     singletons = [singletons[i] for i in order]
     total_sum = np.sum(np.abs(values_singletons))
     intermediate_sum = 0
-    ind = 0
-    for i in range(len(values_singletons)):
-        intermediate_sum += np.abs(values_singletons[i])
-        if intermediate_sum > 1*total_sum:
-            ind = i
-            break
-    #ind = len(values_singletons)
-    values_singletons = values_singletons[:ind]
-    singletons = singletons[:ind]
+    ind = len(values_singletons)
+    values_singletons = values_singletons
+    singletons = singletons
     # reorder list by order
     ax.bar(range(ind), values_singletons)
     ax.set_xticks(range(ind),singletons)
     plt.gcf().autofmt_xdate()
     ax.set_title(title)
-    bot = min(bot,np.min(values_singletons))
-    top = max(top,np.max(values_singletons))
+    bot = np.min(values_singletons)
+    top = np.max(values_singletons)
     ax.set_ylim([bot*1.05,top*1.05])
 
 def show_interaction_graph(graph,node_names,instance,pandas_instance,model, dataset,average_pred,is_classification,sampling,n_samples,ax=None):

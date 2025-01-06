@@ -30,6 +30,9 @@ pip install -r requirements.txt
 
 ## Usage
 
+### Notebook
+We provide a [notebook](example_usage.ipynb) that showcases how to run and visualize iSHAP on a common regression. 
+
 ### Running Synthetic Experiments
 
 To execute the synthetic experiments as described in Section 5.1 of the associated paper, run:
