@@ -52,7 +52,6 @@ def test_additivity(predictions, coalition, i, j, alpha):
 
     _,p_i = stats.ttest_ind(sample_i_test_1,sample_i_test_2,equal_var=False)
     _,p_j = stats.ttest_ind(sample_j_test_1,sample_j_test_2,equal_var=False)
-    #print(i,j,p_i,p_j)
 
     adjusted_alpha = alpha/2
     return p_i < adjusted_alpha or p_j < adjusted_alpha
@@ -89,7 +88,6 @@ def find_partition_exhaustive(interactions_graph,average_prediction,model,instan
     lambd = lambd*(component_sum-value_target)**2
 
     if interactions_graph is None:
-        #all_partitions = pickle.load(open('temp/partitions_'+str(d)+'.pkl','rb'))
         all_partitions = generate_max_partition(max_partition)
     else:
         all_partitions = generate_max_partition(max_partition)

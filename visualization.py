@@ -6,7 +6,7 @@ from utils import compute_value_function
 import colorsys
 import matplotlib.patches as mpatches
 
-plt.style.use('seaborn-whitegrid')
+#plt.style.use('seaborn-whitegrid')
 params = {'legend.fontsize': 'x-large',
           'figure.figsize': (15, 5),
          'axes.labelsize': 'x-large',
@@ -16,20 +16,7 @@ params = {'legend.fontsize': 'x-large',
          "text.usetex": True}
 plt.rcParams.update(params)
 
-def plot_ishap(explanation, instance, fx, feature_names,title="",ax=None):
-    
-    coalitions = list(map(lambda x: x[0], explanation))
-    values = list(map(lambda x: x[1], explanation))
-    instance = list(map(lambda x: x if type(x)==str else "{:.2f}".format(x), instance))
-    coalitions = list(map(lambda x: list(map(lambda y: feature_names[y] + ":" + instance[y], x)), coalitions))
-    coalitions = list(map(lambda x: ",".join(x), coalitions))
-    if ax is None:
-        _, ax = plt.subplots()
-    ax.bar(range(len(coalitions)), values, tick_label=coalitions)
-    ax.set_title(title)
-    plt.gcf().autofmt_xdate()
-
-def plot_partition_explanation(explanation_coalitions,explanation_singletons,instance,fx,feature_names,title="",ax=None,ylabel=""):
+def plot_ishap(explanation_coalitions,explanation_singletons,instance,fx,feature_names,title="",ax=None,ylabel=""):
     if ax is None:
         _, ax = plt.subplots()
     coalition_sets = list(map(lambda x: x[0], explanation_coalitions))
@@ -99,9 +86,9 @@ def plot_partition_explanation(explanation_coalitions,explanation_singletons,ins
     ax.set_ylim([ymin*1.05,ymax*1.05])
     l = [mpatches.Patch(color='C0', label='Individual Effect')]
     if has_positive:
-        l.append(mpatches.Patch(color='red', label='Insurance Increase'))
+        l.append(mpatches.Patch(color='green', label='Positive Interaction'))
     if has_negative:
-        l.append(mpatches.Patch(color='green', label='Insurance Decrease'))
+        l.append(mpatches.Patch(color='red', label='Negative Interaction'))
     ax.legend(handles=l)
 
     return
@@ -124,7 +111,7 @@ def plot_shapley(feature_names,instance,explanation_singletons,title="",ax=None)
     ind = 0
     for i in range(len(values_singletons)):
         intermediate_sum += np.abs(values_singletons[i])
-        if intermediate_sum > 0.95*total_sum:
+        if intermediate_sum > 1*total_sum:
             ind = i
             break
     #ind = len(values_singletons)
@@ -153,16 +140,20 @@ def show_interaction_graph(graph,node_names,instance,pandas_instance,model, data
     for edge, value in effects.items():
         i = edge[0]
         j = edge[1]
+
+        # 
         
         if value< 0:
-            s = value/norm_factor
-            rgb = colorsys.hsv_to_rgb(11/360, s, 0.83)
+            # make edge red and transparency proportional to value
+            v = (abs(value)/norm_factor)**2
+            rgb = colorsys.hsv_to_rgb(11/360, v, 0.8)
             rgb = tuple(map(lambda x: int(x*255),rgb))
+
             graph[edge[0]][edge[1]]['color'] = '#%02x%02x%02x' % rgb
-            
         else:
-            s = value/norm_factor*-1
-            rgb = colorsys.hsv_to_rgb(132/360, s, 0.83)
+            # make edge green and transparency proportional to value
+            v = (abs(value)/norm_factor)**2
+            rgb = colorsys.hsv_to_rgb(120/360, v, 0.8)
             rgb = tuple(map(lambda x: int(x*255),rgb))
             graph[edge[0]][edge[1]]['color'] = '#%02x%02x%02x' % rgb
     mapping = {}
@@ -177,7 +168,7 @@ def show_interaction_graph(graph,node_names,instance,pandas_instance,model, data
     A.layout('dot')
     A.draw('graph.png')
     if ax is None:
-        plt.figure(figsize=(15,20))
+        plt.figure()
         plt.axis("off")
         plt.imshow(plt.imread('graph.png'))
     else:

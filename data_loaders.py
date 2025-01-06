@@ -14,25 +14,6 @@ def column_to_numeric(series):
     return mapping
     
 
-
-def load_obesity():
-    df = pd.read_csv("data/obesity/obesity.csv",sep=",")
-    output = {}
-    output["df"] = df.copy(True)
-    output["target_name"] = "Weight Category"
-    df["NObeyesdad"].replace({"Insufficient_Weight":0,"Normal_Weight":1,"Overweight_Level_I":2,"Overweight_Level_II":3,"Obesity_Type_I":4,"Obesity_Type_II":5,"Obesity_Type_III":6},inplace=True)
-    turn_to_numeric = list(filter(lambda x: not pd.api.types.is_numeric_dtype(df[x]),df.columns.values.tolist()))
-    for col in turn_to_numeric:
-        if col == "NObeyesdad":
-            continue
-        replacement = column_to_numeric(df[col])
-        df[col].replace(replacement,inplace=True)   
-    output["target"] = df["NObeyesdad"].to_numpy()
-    df = df.drop("NObeyesdad",axis=1) 
-    output["data"] = df.to_numpy()
-    output["feature_names"] = df.columns.values.tolist()
-    return output
-
 # German Credit Dataset (Binary Classification Risk/No Risk)
 # https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
 def load_credit():
@@ -59,52 +40,6 @@ def load_credit():
     
     output["data"] = df.to_numpy()
     output["feature_names"] = df.columns.values.tolist()
-    return output
-
-def load_default():
-    df = pd.read_csv("data/default/default.csv",sep=",",index_col=0)
-    df.dropna(inplace=True)
-    for i in range(1,7):
-        df.drop("PAY_{:d}".format(i),axis=1,inplace=True)
-        df.drop("PAY_AMT{:d}".format(i),axis=1,inplace=True)
-        df.drop("BILL_AMT{:d}".format(i),axis=1,inplace=True)
-    output = {}
-    df["CREDIT LIMIT"] = (df["CREDIT LIMIT"]/33).round()
-    df["Default"].replace( {0:"No Default",1:"Default"},inplace=True)
-    df["SEX"].replace({1:"male",2:"female"},inplace=True)
-    df["EDUCATION"].replace({1:"graduate school",2:"university",3:"high school",4:"other"},inplace=True)
-    df["MARRIAGE"].replace({1:"married",2:"single",3:"other"},inplace=True)
-    output["df"] = df.copy(True)
-    df["Default"].replace( {"No Default":0,"Default":1},inplace=True)
-    output["target"] = df["Default"].to_numpy()
-    df = df.drop("Default",axis=1) 
-    output["mapper"] = {}
-    output["target_name"] = "Risk of Default"
-    turn_to_numeric = list(filter(lambda x: not pd.api.types.is_numeric_dtype(df[x]),df.columns.values.tolist()))
-    for col in turn_to_numeric:
-        replacement = column_to_numeric(df[col])
-        df[col].replace(replacement,inplace=True)   
-        index = df.columns.values.tolist().index(col)
-        output["mapper"][index] = {v: k for k, v in replacement.items()}
-    
-    output["data"] = df.to_numpy()
-    output["feature_names"] = df.columns.values.tolist()
-    return output
-
-def load_wages():
-    df = pd.read_csv("data/wages/wages.csv")
-    output = {}
-    df.drop(["ed","height"],axis=1,inplace=True)
-    output["df"] = df.copy(True)
-    for col in ["sex","race"]:
-        replacement = column_to_numeric(df[col])
-        df[col].replace(replacement,inplace=True)
-    output["target"] = df["earn"].to_numpy()
-    output["feature_names"] = df.columns.values.tolist()
-    output["feature_names"].remove("earn")
-    output["target_name"] = "income"
-    output["data"] = df.drop("earn",axis=1).to_numpy()
-
     return output
 
 
@@ -156,22 +91,6 @@ def load_life():
     output["target_name"] = "Life expectancy"
     return output
 
-def load_adult():
-    df = pd.read_csv("data/adult/adult.data")
-    output = {}
-    output["df"] = df.copy(True)
-    df["class"].replace([" <=50K"," >50K"],[0,1],inplace=True)
-    for col in ["workclass","education","marital-status","occupation","relationship","race","sex","native-country"]:
-        replacement = column_to_numeric(df[col])
-        df[col].replace(replacement,inplace=True)
-
-    output["target"] = df["class"].to_numpy()
-    output["feature_names"] = df.columns.values.tolist()
-    output["feature_names"].remove("class")
-    output["data"] = df.drop("class",axis=1).to_numpy()
-    output["target_name"] = "Income >= 50k"
-
-    return output
 
 def load_insurance():
     df = pd.read_csv("data/insurance/insurance.csv")
@@ -191,33 +110,3 @@ def load_insurance():
     output["target_name"] = "Insurance Rate"
     return output
     
-def load_boston():
-    df = pd.read_csv("data/boston_housing/BostonHousing.csv")
-    output = {}
-    output["df"] = df.copy(True)
-    output["target"] = df["medv"].to_numpy()
-    output["feature_names"] = df.columns.values.tolist()
-    output["feature_names"].remove("medv")
-    output["data"] = df.drop("medv",axis=1).to_numpy()
-    output["target_name"] = "Median value of owner-occupied homes in $1000's"
-    return output
-
-def load_covid():
-    df = pd.read_csv("data/covid/covid.csv")
-    output = {}
-    df.drop(["outcome","id","patient_id","weekday_change_of_status","hour_change_of_status","weekday_admit","hour_admit","days_change_of_status","date_admit","date_change_of_status","hospital"],axis=1,inplace=True)
-    df.drop(df[df["group"]=="Patient"].index,inplace=True)
-    df.dropna(inplace=True)
-    output["df"] = df.copy(True)
-    df["group"].replace(["Expired","Discharged"],[0,1],inplace=True)
-    for col in ["sex","race"]:
-        replacement = column_to_numeric(df[col])
-        df[col].replace(replacement,inplace=True)
-    df.dropna(inplace=True)
-    output["target"] = df["group"].to_numpy()
-    output["feature_names"] = df.columns.values.tolist()
-    output["feature_names"].remove("group")
-    df.drop("group",axis=1,inplace=True)
-    output["data"] = df.to_numpy()
-    output["target_name"] = "group"
-    return output

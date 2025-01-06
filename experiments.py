@@ -1,6 +1,6 @@
 import numpy as np
 from data_loaders import *
-from supplementary.ishap import ishap, compute_singleton_values, compute_coalition_shapleys
+from ishap import ishap, compute_singleton_values, compute_coalition_shapleys
 import nshap
 import itertools
 from csv import writer
@@ -12,7 +12,7 @@ from sklearn.neural_network import MLPRegressor, MLPClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.neighbors import KNeighborsRegressor, KNeighborsClassifier
-from sklearn.datasets import load_diabetes, load_wine, load_breast_cancer, fetch_california_housing
+from sklearn.datasets import load_diabetes, load_breast_cancer, fetch_california_housing
 import matplotlib.pyplot as plt
 import random
 
@@ -221,7 +221,7 @@ def evaluate_nshap(model,X,classification,tests=50,degree=4):
     return R2, R2_2, mse/tests
 
 
-def test_dataset(dataset,classification,name,modelname,tests,amount_of_points,savefig=True):
+def test_dataset(dataset,classification,name,modelname,tests,amount_of_points,savefig=False):
     dataset["data"] = StandardScaler().fit_transform(dataset["data"])
     X = dataset["data"]
     Y = dataset["target"]
@@ -246,13 +246,9 @@ def test_dataset(dataset,classification,name,modelname,tests,amount_of_points,sa
     if name not in ["student","breast_cancer","life","adult"]:
         r2_nshap, r2_nshap_full, _ = evaluate_nshap(model,X,classification,tests=tests,degree=3)
     r2_ishap, mse_ishap = evaluate_interpolation(name,model,X,classification,verbose=False,explanation_type="value",tests=tests,amount_of_points=amount_of_points,max_coalition_size=max_coalition_size)
-    #r2_ishap_shap, mse_ishap_shap = evaluate_interpolation(name,model,X,classification,verbose=False,explanation_type="shap",tests=tests,amount_of_points=amount_of_points,max_coalition_size=max_coalition_size)
-    #r2_singleton, mse_singleton = evaluate_singletons(model,X,classification,explanation_type="value",tests=tests,amount_of_points=amount_of_points)
     
     r2_singleton_shap, mse_singleton_shap = evaluate_singletons(model,X,classification,explanation_type="shap",tests=tests,amount_of_points=amount_of_points)
     r2_ishap = np.squeeze(r2_ishap)
-    #r2_ishap_shap = np.squeeze(r2_ishap_shap)
-    #r2_singleton = np.squeeze(r2_singleton)
     r2_singleton_shap = np.squeeze(r2_singleton_shap)
     r2_nshap = np.squeeze(r2_nshap)
     r2_nshap_full = np.squeeze(r2_nshap_full)
@@ -261,20 +257,16 @@ def test_dataset(dataset,classification,name,modelname,tests,amount_of_points,sa
     r2s = np.array([r2_ishap, r2_singleton_shap, r2_nshap, r2_nshap_full])
     print(name,r2s)
     plt.bar(0,r2_ishap,label="ishap")
-    #plt.bar(1,r2_singleton,label="Singletons")
     plt.bar(1,r2_singleton_shap,label="SHAP")
     plt.bar(2,r2_nshap,label="N-SHAP")
     plt.bar(3,r2_nshap_full,label="N-SHAP full")
     plt.xticks([0,1,2,3],["ishap","SHAP","N-SHAP","N-SHAP full"])
-    #plt.bar([0,2],[r2s[0],r2s[2]],label="ishap")
-    #plt.bar([1,3],[r2s[1],r2s[3]],label="Singletons")
-    #plt.xticks([0,1,2,3],["ishap","Singletons","ishap-SHAP","Singletons-SHAP"])
     plt.ylim(0,1)
     plt.ylabel("R2")
     plt.title("R2 " + name + " dataset")
     if savefig:
         plt.savefig("plots/"+name+".png")
-    with open("results/"+modelname+".csv","a") as f:
+    with open("results/accuracy/"+modelname+".csv","a") as f:
         writerobject = writer(f)
         writerobject.writerow([name,r2_ishap,r2_singleton_shap,r2_nshap, r2_nshap_full])
         f.close()
@@ -313,5 +305,5 @@ if __name__ == "__main__":
     tests = int(sys.argv[3])
     amount_of_points = int(sys.argv[4])
     print("Testing "+name+" dataset")
-    test_dataset(dataset,classification,name,model,tests,amount_of_points,savefig=True)
+    test_dataset(dataset,classification,name,model,tests,amount_of_points,savefig=False)
     print(name + " done")

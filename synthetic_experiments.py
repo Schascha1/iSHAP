@@ -1,7 +1,7 @@
 import autograd.numpy as np
 from autograd import jacobian
 import numpy.ma as ma
-from supplementary.ishap import ishap
+from ishap import ishap
 import sys 
 import matplotlib.pyplot as plt
 from sklearn.metrics import normalized_mutual_info_score, adjusted_rand_score, rand_score
@@ -448,7 +448,7 @@ if __name__ == "__main__":
     np.random.seed(0)
     n_samples = 10000
     var_count = [4,6,8,10,15,20,30,50,75,100]
-    savefig = True
+    savefig = False
     ff = []
     fg = []
     nf = []
