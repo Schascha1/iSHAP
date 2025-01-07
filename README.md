@@ -1,6 +1,18 @@
-# iSHAP: Interpretable SHAP for Machine Learning Models
+# iSHAP: Succinct Interaction-Aware Explanations (KDD 2025)
 
-iSHAP is a Python library designed to enhance the interpretability of machine learning models by providing more interpretable SHAP (SHapley Additive exPlanations) values. This tool is particularly useful for understanding complex models by offering clear insights into feature importance and model predictions.
+iShap is an interaction-aware Shapley value based explanation that partitions the feature set to 
+inform about the most important feature interactions whilst providing the most accurate additive representation.
+While SHAP [2]explanations are easy to interpret, they often overlook interactions between features, leading to incomplete or misleading insights. On the other hand, interaction-aware methods like nShap [3] provide exhaustive explanations but are often too large and complex to interpret effectively.
+
+iShap bridges this gap by partitioning features into significantly interacting groups, creating succinct, interpretable, and additive explanations. To identify the optimal partitioning from many possibilities, iShap introduces a criterion balancing explanation complexity with representativeness. A statistical pruning method improves runtime and helps avoid spurious interactions.
+
+![](data/intro-fig.png)
+*Comparison of Shap (left), our proposal iShap (middle) and 𝑛Shap (right) on the Bike Sharing dataset [4]. Shap
+does not reveal interactions, 𝑛Shap returns non-zero scores for 751 out of 1024 feature sets (𝑛 = 𝑑). iShap provides a concise
+explanation of 2 interactions for the high predicted demand: its is a dry and relatively warm winter day (Season:4, Hum:0.49
+and Temp:0.39) and a Saturday with little wind (Weekday:6 and Windspeed:0.15).*
+
+Experiments demonstrate that iShap more accurately reflects underlying model behavior than SHAP and nShap, and user studies indicate it is more interpretable and trustworthy.
 
 ## Features
 
@@ -82,3 +94,11 @@ For questions or support, please open an issue in the repository or contact [sas
 ---
 
 This README provides an overview of the iSHAP project, its installation and usage. For detailed information, refer to the [associated paper](https://eda.rg.cispa.io/prj/ishap/). 
+
+[1] Xu, Sascha, Joscha Cüppers, and Jilles Vreeken. "Succint Interaction-Aware Explanations." Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining. 2025.
+
+[2] Lundberg, Scott M., and Su-In Lee. "A Unified Approach to Interpreting Model Predictions." Advances in Neural Information Processing Systems 30 (2017).
+
+[3] Bordt, Sebastian, and Ulrike von Luxburg. "From shapley values to generalized additive models and back." International Conference on Artificial Intelligence and Statistics. PMLR, 2023.
+
+[4] Fanaee-T, Hadi, and Joao Gama. "Event labeling combining ensemble detectors and background knowledge." Progress in Artificial Intelligence 2 (2014): 113-127.
