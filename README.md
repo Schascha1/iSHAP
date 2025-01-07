@@ -81,7 +81,7 @@ If you use iSHAP in your research, please cite the associated paper:
 @inproceedings{ishap:xu:25,
   title={Succint Interaction-Aware Explanations},
   author={Xu, Sascha and C{\"u}ppers, Joscha and Vreeken, Jilles},
-  booktitle = {Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining},
+  booktitle = {Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining},
   year={2025},
   url={https://openreview.net/forum?id=uXLXFWTaoT}
 }
@@ -95,7 +95,7 @@ For questions or support, please open an issue in the repository or contact [sas
 
 This README provides an overview of the iSHAP project, its installation and usage. For detailed information, refer to the [associated paper](https://eda.rg.cispa.io/prj/ishap/). 
 
-[1] Xu, Sascha, Joscha Cüppers, and Jilles Vreeken. "Succint Interaction-Aware Explanations." Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining. 2025.
+[1] Xu, Sascha, Joscha Cüppers, and Jilles Vreeken. "Succint Interaction-Aware Explanations." Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining. 2025.
 
 [2] Lundberg, Scott M., and Su-In Lee. "A Unified Approach to Interpreting Model Predictions." Advances in Neural Information Processing Systems 30 (2017).
 
