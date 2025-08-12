@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ishap"
-version = "0.1.0"
+version = "1.0.0"
 authors = [
-  { name="Your Name", email="your.email@example.com" },
+  { name="Sascha Xu", email="sascha.xu@yahoo.de" },
 ]
 description = "An implementation of Interaction-aware Shapley Values (ISHAP)."
 readme = "README.md"
